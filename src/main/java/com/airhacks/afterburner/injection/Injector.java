@@ -1,5 +1,24 @@
 package com.airhacks.afterburner.injection;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+
 /*
  * #%L
  * afterburner.fx
@@ -20,22 +39,8 @@ package com.airhacks.afterburner.injection;
  * #L%
  */
 import com.airhacks.afterburner.configuration.Configurator;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.inject.Inject;
+import com.google.inject.Guice;
+import com.google.inject.Module;
 
 /**
  *
@@ -51,6 +56,8 @@ public class Injector {
     private static Consumer<String> LOG = getDefaultLogger();
 
     private static final Configurator configurator = new Configurator();
+    
+    private static com.google.inject.Injector guiceInjector = null;
 
     public static <T> T instantiatePresenter(Class<T> clazz, Function<String, Object> injectionContext) {
         @SuppressWarnings("unchecked")
@@ -226,11 +233,26 @@ public class Injector {
     static Function<Class<?>, Object> getDefaultInstanceSupplier() {
         return (c) -> {
             try {
-                return c.newInstance();
-            } catch (InstantiationException | IllegalAccessException ex) {
+            	return getGuiceInjector().getInstance(c);
+            } catch (Exception ex) {
                 throw new IllegalStateException("Cannot instantiate view: " + c, ex);
             }
         };
+    }    
+    
+    
+    private static com.google.inject.Injector getGuiceInjector() {
+    	if (guiceInjector == null) {
+    		throw new IllegalStateException("Guice Injector hasn't set");
+    	}
+    	return guiceInjector;
+    }
+    
+    public static void initGuiceInjector(Module... modules) {
+    	if (guiceInjector != null) {
+    		throw new IllegalStateException("Guice Injector already instantiaded");
+    	}
+    	guiceInjector = Guice.createInjector(modules);
     }
 
     public static Consumer<String> getDefaultLogger() {
