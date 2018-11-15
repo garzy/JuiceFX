@@ -1,6 +1,8 @@
 afterburner.fx
 ==============
 
+**note: this is a fork or original project to add Google Guice DI**
+
 The opinionated just-enough MVP framework (2.5 classes) for JavaFX
 
 Afterburner is a "Just-Enough-Framework" extracted from [airhacks-control](https://github.com/AdamBien/airhacks-control) and used in [airpad](https://github.com/AdamBien/airpad), [lightfish](https://github.com/AdamBien/lightfish) and [floyd](https://github.com/AdamBien/floyd) applications. 
