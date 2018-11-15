@@ -1,7 +1,7 @@
 JuiceFX: afterburner.fx fork with Google Guice DI
 =================================================
 
-**note: this is a fork of the original project to add Google Guice DI** if you have better approach for this, let me know, thanks.
+**[NOTE]: this is a fork of the original project to add Google Guice DI** if you have better approach for this, let me know, thanks.
 
 For default, default Guice injector without modules is created, if you want setup modules you must do this at the very first start time of your application:
 
@@ -17,9 +17,9 @@ For now, injection of configuration.properties through primitive injection must 
 Example:
 
 ```shell
-	@Inject
-	@Nullable
-   private String name;
+@Inject
+@Nullable
+private String name;
 ```
 
 ## Important How To Import for now in your Maven Project:
@@ -27,7 +27,7 @@ Example:
 While I'm learn and work in the way to upload to official Maven Central, do this for now in your pom.xml:
 
 ```xml
-	<repositories>
+<repositories>
     <repository>
         <id>JuiceFX-mvn-repo</id>
         <url>https://raw.github.com/garzy/JuiceFX/mvn-repo/</url>
