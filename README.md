@@ -1,7 +1,7 @@
-afterburner.fx
-==============
+JuiceFX: afterburner.fx fork with Google Guice DI
+=================================================
 
-**note: this is a fork or original project to add Google Guice DI**
+**note: this is a fork of the original project to add Google Guice DI** if you have better approach for this, let me know, thanks.
 
 The opinionated just-enough MVP framework (2.5 classes) for JavaFX
 
