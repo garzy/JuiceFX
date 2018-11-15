@@ -22,6 +22,31 @@ Example:
    private String name;
 ```
 
+##Important How To Import for now in your Maven Project:
+
+While I'm learn and work in the way to upload to official Maven Central, do this for now in your pom.xml:
+
+```xml
+	<repositories>
+    <repository>
+        <id>JuiceFX-mvn-repo</id>
+        <url>https://raw.github.com/garzy/JuiceFX/mvn-repo/</url>
+        <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+        </snapshots>
+    </repository>
+</repositories>
+
+<dependencies>
+ <dependency>
+   <groupId>com.airhacks</groupId>
+   <artifactId>juice.fx</artifactId>
+   <version>1.7.1-SNAPSHOT</version>
+ </dependency>
+</dependencies>
+```
+
 =====================
 
 
