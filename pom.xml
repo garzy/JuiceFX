@@ -6,7 +6,7 @@
         <version>9</version>
     </parent>
     <groupId>com.airhacks</groupId>
-    <artifactId>afterburner.fx</artifactId>
+    <artifactId>juice.fx</artifactId>
     <version>1.7.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -54,8 +54,54 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    
+	<distributionManagement>
+		<repository>
+			<id>internal.repo</id>
+			<name>Temporary Staging Repository</name>
+			<url>file://${project.build.directory}/mvn-repo</url>
+		</repository>
+	</distributionManagement>
+    
     <build>
         <plugins>
+			<plugin>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.8.1</version>
+				<configuration>
+					<altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo</altDeploymentRepository>
+				</configuration>
+			</plugin>
+
+
+	<plugin>
+		<groupId>com.github.github</groupId>
+		<artifactId>site-maven-plugin</artifactId>
+		<version>0.12</version>
+		<configuration>
+			<message>Maven artifacts for ${project.version}</message>  <!-- git commit message -->
+			<noJekyll>true</noJekyll>                                  <!-- disable webpage processing -->
+			<outputDirectory>${project.build.directory}/mvn-repo</outputDirectory> <!-- matches distribution management repository url above -->
+			<branch>refs/heads/mvn-repo</branch>                       <!-- remote branch name -->
+			<includes>
+				<include>**/*</include>
+			</includes>
+			<merge>true</merge>                                        <!-- don't delete old artifacts -->
+			<repositoryName>JuiceFX</repositoryName>      <!-- github repo name -->
+			<repositoryOwner>garzy</repositoryOwner>    <!-- github username -->
+		</configuration>
+		<executions>
+			<!-- run site-maven-plugin's 'site' target as part of the build's normal 
+				'deploy' phase -->
+			<execution>
+				<goals>
+					<goal>site</goal>
+				</goals>
+				<phase>deploy</phase>
+			</execution>
+		</executions>
+	</plugin>
+        
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>license-maven-plugin</artifactId>
@@ -109,6 +155,9 @@
                         </goals>
                     </execution>
                 </executions>
+                 <configuration>
+					<skip>true</skip>
+				</configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -176,7 +225,7 @@
                 </includes>
             </resource>
         </resources>
-        <finalName>afterburner</finalName>
+        <finalName>juicefx</finalName>
         <pluginManagement>
         	<plugins>
         		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
@@ -216,14 +265,27 @@
         </pluginManagement>
     </build>
     <scm>
-        <connection>scm:git:git@github.com:AdamBien/afterburner.fx.git</connection>
-        <url>scm:git:git@github.com:AdamBien/afterburner.fx.git</url>
-        <developerConnection>scm:git:git@github.com:AdamBien/afterburner.fx.git</developerConnection>
+        <connection>scm:git:git@github.com:garzy/JuiceFX.git</connection>
+        <url>scm:git:git@github.com:garzy/JuiceFX.git</url>
+        <developerConnection>scm:git:git@github.com:garzy/JuiceFX.git</developerConnection>
         <tag>v1.6.2</tag>
     </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <!-- github server corresponds to entry in ~/.m2/settings.xml -->
+	    <github.global.server>github</github.global.server>
     </properties>
+
+	<repositories>
+		<repository>
+			<id>JuiceFX-mvn-repo</id>
+			<url>https://raw.github.com/garzy/JuiceFX/mvn-repo/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
 </project>

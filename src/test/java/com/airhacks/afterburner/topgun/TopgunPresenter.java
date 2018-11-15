@@ -37,8 +37,11 @@ package com.airhacks.afterburner.topgun;
 import java.net.URL;
 import java.util.Date;
 import java.util.ResourceBundle;
-import javafx.fxml.Initializable;
+
+import javax.annotation.Nullable;
 import javax.inject.Inject;
+
+import javafx.fxml.Initializable;
 
 /**
  * FXML Controller class
@@ -47,7 +50,8 @@ import javax.inject.Inject;
  */
 public class TopgunPresenter implements Initializable {
 
-    @Inject
+	@Inject
+	@Nullable
     private String host;
 
     @Inject
@@ -56,7 +60,7 @@ public class TopgunPresenter implements Initializable {
     @Inject
     Date date;
 
-    @Inject
+	@Inject
     int damage;
 
     ResourceBundle rb;

@@ -3,6 +3,28 @@ JuiceFX: afterburner.fx fork with Google Guice DI
 
 **note: this is a fork of the original project to add Google Guice DI** if you have better approach for this, let me know, thanks.
 
+For default, default Guice injector without modules is created, if you want setup modules you must do this at the very first start time of your application:
+
+```shell
+Injector.setGuiceModules(new MyCustomModule1(), new MyCustomModule2());
+```
+
+It's all :)
+
+##Known limitations
+For now, injection of configuration.properties through primitive injection must also annotated by @Nullable
+
+Example:
+
+```shell
+	@Inject
+	@Nullable
+   private String name;
+```
+
+=====================
+
+
 The opinionated just-enough MVP framework (2.5 classes) for JavaFX
 
 Afterburner is a "Just-Enough-Framework" extracted from [airhacks-control](https://github.com/AdamBien/airhacks-control) and used in [airpad](https://github.com/AdamBien/airpad), [lightfish](https://github.com/AdamBien/lightfish) and [floyd](https://github.com/AdamBien/floyd) applications. 

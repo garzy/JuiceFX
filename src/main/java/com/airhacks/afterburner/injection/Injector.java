@@ -1,29 +1,10 @@
 package com.airhacks.afterburner.injection;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.inject.Inject;
-
 /*
  * #%L
  * afterburner.fx
  * %%
- * Copyright (C) 2013 Adam Bien
+ * Copyright (C) 2013 - 2018 Adam Bien
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +19,28 @@ import javax.inject.Inject;
  * limitations under the License.
  * #L%
  */
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+
 import com.airhacks.afterburner.configuration.Configurator;
 import com.google.inject.Guice;
 import com.google.inject.Module;
@@ -58,6 +61,8 @@ public class Injector {
     private static final Configurator configurator = new Configurator();
     
     private static com.google.inject.Injector guiceInjector = null;
+
+	private static final List<Module> guiceModules = new ArrayList<>();
 
     public static <T> T instantiatePresenter(Class<T> clazz, Function<String, Object> injectionContext) {
         @SuppressWarnings("unchecked")
@@ -243,17 +248,19 @@ public class Injector {
     
     private static com.google.inject.Injector getGuiceInjector() {
     	if (guiceInjector == null) {
-    		throw new IllegalStateException("Guice Injector hasn't set");
+			List<Module> modules = new ArrayList<>(guiceModules);
+			modules.add(new PrimitivesModule());
+			guiceInjector = Guice.createInjector(modules);
     	}
     	return guiceInjector;
     }
     
-    public static void initGuiceInjector(Module... modules) {
-    	if (guiceInjector != null) {
-    		throw new IllegalStateException("Guice Injector already instantiaded");
-    	}
-    	guiceInjector = Guice.createInjector(modules);
-    }
+	public static void setGuiceModules(Module... modules) {
+		guiceModules.clear();
+		if (modules != null && modules.length > 0) {
+			guiceModules.addAll(Arrays.asList(modules));
+		}
+	}
 
     public static Consumer<String> getDefaultLogger() {
         return l -> {

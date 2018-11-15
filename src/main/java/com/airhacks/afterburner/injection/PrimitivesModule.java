@@ -4,7 +4,7 @@ package com.airhacks.afterburner.injection;
  * #%L
  * afterburner.fx
  * %%
- * Copyright (C) 2013 Adam Bien
+ * Copyright (C) 2013 - 2018 Adam Bien
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,24 +20,15 @@ package com.airhacks.afterburner.injection;
  * #L%
  */
 
-import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.inject.Singleton;
+import com.google.inject.AbstractModule;
+import com.google.inject.util.Providers;
 
-/**
- *
- * @author adam-bien.com
- */
-@Singleton
-public class Boundary {
+public class PrimitivesModule extends AbstractModule {
 
-    static AtomicInteger INSTANCE_COUNT = new AtomicInteger(0);
-
-    public Boundary() {
-        INSTANCE_COUNT.incrementAndGet();
-    }
-
-    public int getNumberOfInstances() {
-        return INSTANCE_COUNT.get();
-    }
+	@Override
+	protected void configure() {
+		bind(Integer.class).toInstance(1);
+		bind(String.class).toProvider(Providers.of(null));
+	}
 }
