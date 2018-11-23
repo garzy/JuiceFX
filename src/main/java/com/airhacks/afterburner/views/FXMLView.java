@@ -278,7 +278,7 @@ public abstract class FXMLView extends StackPane {
         return clazz;
     }
 
-    String getBundleName() {
+	protected String getBundleName() {
         String conventionalName = getConventionalName(true);
         return this.getClass().getPackage().getName() + "." + conventionalName;
     }
