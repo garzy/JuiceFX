@@ -246,7 +246,7 @@ public class Injector {
     }    
     
     
-    private static com.google.inject.Injector getGuiceInjector() {
+	public static com.google.inject.Injector getGuiceInjector() {
     	if (guiceInjector == null) {
 			List<Module> modules = new ArrayList<>(guiceModules);
 			modules.add(new PrimitivesModule());
