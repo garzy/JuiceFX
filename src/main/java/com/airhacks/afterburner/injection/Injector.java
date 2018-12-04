@@ -262,6 +262,20 @@ public class Injector {
 		}
 	}
 
+	/**
+	 * Sets external previous created guice Injector. If you want to add more
+	 * Modules you must call <code>setGuiceModules</code> before this. A new
+	 * injector, child of the param, whill by created as
+	 * injector.createChildInjector.
+	 * 
+	 * @param injector the previously created guice Injector.
+	 */
+	public static void setGuiceInjector(com.google.inject.Injector injector) {
+		List<Module> modules = new ArrayList<>(guiceModules);
+		modules.add(new PrimitivesModule());
+		guiceInjector = injector.createChildInjector(modules);
+	}
+
     public static Consumer<String> getDefaultLogger() {
         return l -> {
         };
