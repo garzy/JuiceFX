@@ -28,10 +28,8 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.function.Consumer;
@@ -51,12 +49,9 @@ import com.google.inject.Module;
  */
 public class Injector {
 
-    private static final Map<Class<?>, Object> modelsAndServices = new WeakHashMap<>();
     private static final Set<Object> presenters = Collections.newSetFromMap(new WeakHashMap<>());
 
     private static Function<Class<?>, Object> instanceSupplier = getDefaultInstanceSupplier();
-
-    private static Consumer<String> LOG = getDefaultLogger();
 
     private static final Configurator configurator = new Configurator();
     
@@ -74,12 +69,27 @@ public class Injector {
                 final String fieldName = field.getName();
                 final Object value = injectionContext.apply(fieldName);
                 if (value != null) {
-                    injectIntoField(field, presenter, value);
+					injectIntoField(field, presenter, value);
                 }
             }
         }
         return presenter;
     }
+    
+	private static void injectIntoField(final Field field, final Object instance, final Object target) {
+        AccessController.doPrivileged((PrivilegedAction<?>) () -> {
+            boolean wasAccessible = field.isAccessible();
+            try {
+                field.setAccessible(true);
+                field.set(instance, target);
+                return null; // return nothing...
+            } catch (IllegalArgumentException | IllegalAccessException ex) {
+                throw new IllegalStateException("Cannot set field: " + field + " with value " + target, ex);
+            } finally {
+                field.setAccessible(wasAccessible);
+            }
+        });
+	}
 
     public static <T> T instantiatePresenter(Class<T> clazz) {
         return instantiatePresenter(clazz, f -> null);
@@ -87,10 +97,6 @@ public class Injector {
 
     public static void setInstanceSupplier(Function<Class<?>, Object> instanceSupplier) {
         Injector.instanceSupplier = instanceSupplier;
-    }
-
-    public static void setLogger(Consumer<String> logger) {
-        LOG = logger;
     }
 
     public static void setConfigurationSource(Function<Object, Object> configurationSupplier) {
@@ -119,86 +125,30 @@ public class Injector {
         return product;
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> T instantiateModelOrService(Class<T> clazz) {
-        T product = (T) modelsAndServices.get(clazz);
-        if (product == null) {
-            product = injectAndInitialize((T) instanceSupplier.apply(clazz));
-            modelsAndServices.putIfAbsent(clazz, product);
-        }
-        return clazz.cast(product);
-    }
-
-    public static <T> void setModelOrService(Class<T> clazz, T instance) {
-        modelsAndServices.put(clazz, instance);
-    }
-
-    static <T> T injectAndInitialize(T product) {
+	protected static <T> T injectAndInitialize(T product) {
         injectMembers(product);
         initialize(product);
         return product;
     }
 
-    static void injectMembers(final Object instance) {
-        Class<? extends Object> clazz = instance.getClass();
-        injectMembers(clazz, instance);
-    }
+	protected static void injectMembers(final Object instance) {
+		getGuiceInjector().injectMembers(instance);
+	}
 
-    public static void injectMembers(Class<? extends Object> clazz, final Object instance) throws SecurityException {
-        LOG.accept("Injecting members for class " + clazz + " and instance " + instance);
-        Field[] fields = clazz.getDeclaredFields();
-        for (final Field field : fields) {
-            if (field.isAnnotationPresent(Inject.class)) {
-                LOG.accept("Field annotated with @Inject found: " + field);
-                Class<?> type = field.getType();
-                String key = field.getName();
-                Object value = configurator.getProperty(clazz, key);
-                LOG.accept("Value returned by configurator is: " + value);
-                if (value == null && isNotPrimitiveOrString(type)) {
-                    LOG.accept("Field is not a JDK class");
-                    value = instantiateModelOrService(type);
-                }
-                if (value != null) {
-                    LOG.accept("Value is a primitive, injecting...");
-                    injectIntoField(field, instance, value);
-                }
-            }
-        }
-        Class<? extends Object> superclass = clazz.getSuperclass();
-        if (superclass != null) {
-            LOG.accept("Injecting members of: " + superclass);
-            injectMembers(superclass, instance);
-        }
-    }
-
-    static void injectIntoField(final Field field, final Object instance, final Object target) {
-        AccessController.doPrivileged((PrivilegedAction<?>) () -> {
-            boolean wasAccessible = field.isAccessible();
-            try {
-                field.setAccessible(true);
-                field.set(instance, target);
-                return null; // return nothing...
-            } catch (IllegalArgumentException | IllegalAccessException ex) {
-                throw new IllegalStateException("Cannot set field: " + field + " with value " + target, ex);
-            } finally {
-                field.setAccessible(wasAccessible);
-            }
-        });
-    }
-
-    static void initialize(Object instance) {
+	protected static void initialize(Object instance) {
         Class<? extends Object> clazz = instance.getClass();
         invokeMethodWithAnnotation(clazz, instance, PostConstruct.class
         );
     }
 
-    static void destroy(Object instance) {
+	protected static void destroy(Object instance) {
         Class<? extends Object> clazz = instance.getClass();
         invokeMethodWithAnnotation(clazz, instance, PreDestroy.class
         );
     }
 
-    static void invokeMethodWithAnnotation(Class<?> clazz, final Object instance, final Class<? extends Annotation> annotationClass) throws IllegalStateException, SecurityException {
+	private static void invokeMethodWithAnnotation(Class<?> clazz, final Object instance,
+			final Class<? extends Annotation> annotationClass) throws IllegalStateException, SecurityException {
         Method[] declaredMethods = clazz.getDeclaredMethods();
         for (final Method method : declaredMethods) {
             if (method.isAnnotationPresent(annotationClass)) {
@@ -206,7 +156,7 @@ public class Injector {
                     boolean wasAccessible = method.isAccessible();
                     try {
                         method.setAccessible(true);
-                        return method.invoke(instance, new Object[]{});
+						return method.invoke(instance);
                     } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                         throw new IllegalStateException("Problem invoking " + annotationClass + " : " + method, ex);
                     } finally {
@@ -222,20 +172,13 @@ public class Injector {
     }
 
     public static void forgetAll() {
-        Collection<Object> values = modelsAndServices.values();
-        values.stream().forEach((object) -> {
-            destroy(object);
-        });
-        presenters.stream().forEach((object) -> {
-            destroy(object);
-        });
-        presenters.clear();
-        modelsAndServices.clear();
+		presenters.forEach(Injector::destroy);
+		presenters.clear();
         resetInstanceSupplier();
         resetConfigurationSource();
     }
 
-    static Function<Class<?>, Object> getDefaultInstanceSupplier() {
+	private static Function<Class<?>, Object> getDefaultInstanceSupplier() {
         return (c) -> {
             try {
             	return getGuiceInjector().getInstance(c);
@@ -249,7 +192,7 @@ public class Injector {
 	public static com.google.inject.Injector getGuiceInjector() {
     	if (guiceInjector == null) {
 			List<Module> modules = new ArrayList<>(guiceModules);
-			modules.add(new PrimitivesModule());
+			modules.add(new AfterburnerModule(configurator));
 			guiceInjector = Guice.createInjector(modules);
     	}
     	return guiceInjector;
@@ -272,16 +215,12 @@ public class Injector {
 	 */
 	public static void setGuiceInjector(com.google.inject.Injector injector) {
 		List<Module> modules = new ArrayList<>(guiceModules);
-		modules.add(new PrimitivesModule());
+		modules.add(new AfterburnerModule(configurator));
 		guiceInjector = injector.createChildInjector(modules);
 	}
 
     public static Consumer<String> getDefaultLogger() {
         return l -> {
         };
-    }
-
-    private static boolean isNotPrimitiveOrString(Class<?> type) {
-        return !type.isPrimitive() && !type.isAssignableFrom(String.class);
     }
 }

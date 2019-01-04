@@ -15,8 +15,6 @@
  */
 package com.airhacks.afterburner.injection;
 
-import javax.annotation.Nullable;
-
 /*
  * #%L
  * afterburner.fx
@@ -46,7 +44,6 @@ import javax.inject.Inject;
 public class PresenterWithField {
 
 	@Inject
-	@Nullable
     private String name;
 
     public String getName() {

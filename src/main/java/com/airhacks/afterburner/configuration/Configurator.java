@@ -36,18 +36,19 @@ package com.airhacks.afterburner.configuration;
  */
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Properties;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import com.google.inject.Module;
+import javax.inject.Provider;
+import javax.inject.Singleton;
 
 /**
  *
  * @author airhacks.com
  */
-public class Configurator {
+@Singleton
+public class Configurator implements Provider<Object> {
 
     public final static String CONFIGURATION_FILE = "configuration.properties";
 
@@ -113,4 +114,10 @@ public class Configurator {
     public void forgetAll() {
         this.customConfigurator = null;
     }
+
+	@Override
+	public Object get() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -1,5 +1,13 @@
 package com.airhacks.afterburner.injection;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 /*
  * #%L
  * afterburner.fx
@@ -22,29 +30,9 @@ package com.airhacks.afterburner.injection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
-import static org.hamcrest.CoreMatchers.is;
 
 import org.junit.After;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
-
-import static org.mockito.Matchers.anyString;
-
-import org.mockito.Mockito;
-
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 /**
  *
@@ -96,22 +84,6 @@ public class InjectorTest {
         Injector.forgetAll();
     }
 
-    @Test
-    public void forgetAllModels() {
-        Model first = Injector.instantiateModelOrService(Model.class);
-        Injector.forgetAll();
-        Model second = Injector.instantiateModelOrService(Model.class);
-        assertNotSame(first, second);
-    }
-
-    @Test
-    public void setInstanceSupplier() {
-        Function<Class<?>, Object> provider = t -> Mockito.mock(t);
-        Injector.setInstanceSupplier(provider);
-        Object mock = Injector.instantiateModelOrService(Model.class);
-        assertTrue(mock.getClass().getName().contains("ByMockito"));
-        Injector.resetInstanceSupplier();
-    }
 
     @Test
     public void productInitialization() {
@@ -183,14 +155,6 @@ public class InjectorTest {
         assertNotNull(actual);
     }
     
-	@Test
-    public void logging() {
-		@SuppressWarnings("unchecked")
-        Consumer<String> logger = mock(Consumer.class);
-        Injector.setLogger(logger);
-        Injector.injectAndInitialize(new DateProperties());
-        verify(logger, atLeastOnce()).accept(anyString());
-    }
 
     @After
     public void reset() {

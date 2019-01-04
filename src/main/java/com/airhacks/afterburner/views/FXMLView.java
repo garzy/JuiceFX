@@ -235,8 +235,13 @@ public abstract class FXMLView extends StackPane {
      * AirhacksView the AirhacksPresenter)
      */
     public Object getPresenter() {
-        this.initializeFXMLLoader();
-        return this.presenterProperty.get();
+		try {
+			this.initializeFXMLLoader();
+			return this.presenterProperty.get();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw ex;
+		}
     }
 
     /**

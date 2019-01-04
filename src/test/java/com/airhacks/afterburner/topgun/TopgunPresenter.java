@@ -38,7 +38,6 @@ import java.net.URL;
 import java.util.Date;
 import java.util.ResourceBundle;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import javafx.fxml.Initializable;
@@ -51,7 +50,6 @@ import javafx.fxml.Initializable;
 public class TopgunPresenter implements Initializable {
 
 	@Inject
-	@Nullable
     private String host;
 
     @Inject
