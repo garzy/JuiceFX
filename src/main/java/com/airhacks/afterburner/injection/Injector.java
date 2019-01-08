@@ -61,7 +61,8 @@ public class Injector {
 
     public static <T> T instantiatePresenter(Class<T> clazz, Function<String, Object> injectionContext) {
         @SuppressWarnings("unchecked")
-        T presenter = registerExistingAndInject((T) instanceSupplier.apply(clazz));
+		T presenter = (T) instanceSupplier.apply(clazz);
+		presenters.add(presenter);
         //after the regular, conventional initialization and injection, perform postinjection
         Field[] fields = clazz.getDeclaredFields();
         for (final Field field : fields) {
@@ -119,36 +120,27 @@ public class Injector {
      * injection
      * @return presenter with injected fields
      */
-    public static <T> T registerExistingAndInject(T instance) {
-        T product = injectAndInitialize(instance);
-        presenters.add(product);
-        return product;
-    }
-
-	protected static <T> T injectAndInitialize(T product) {
-        injectMembers(product);
-        initialize(product);
-        return product;
-    }
-
-	protected static void injectMembers(final Object instance) {
-		getGuiceInjector().injectMembers(instance);
+	public static <T> T registerExistingAndInject(T instance) {
+		doCallAnotationMethodsOnFieldsInstance(instance, PostConstruct.class);
+		presenters.add(instance);
+		return instance;
 	}
 
-	protected static void initialize(Object instance) {
-        Class<? extends Object> clazz = instance.getClass();
-        invokeMethodWithAnnotation(clazz, instance, PostConstruct.class
-        );
-    }
+	/*
+	 * For Object that have been created without Guice usiong new Constructor.
+	 */
+	protected static <T> T injectAndInitialize(T product) {
+		getGuiceInjector().injectMembers(product);
+		doCallAnotationMethodsOnFieldsInstance(product, PostConstruct.class);
+		return product;
+	}
 
 	protected static void destroy(Object instance) {
-        Class<? extends Object> clazz = instance.getClass();
-        invokeMethodWithAnnotation(clazz, instance, PreDestroy.class
-        );
+		doCallAnotationMethodsOnFieldsInstance(instance, PreDestroy.class);
     }
 
 	private static void invokeMethodWithAnnotation(Class<?> clazz, final Object instance,
-			final Class<? extends Annotation> annotationClass) throws IllegalStateException, SecurityException {
+			final Class<? extends Annotation> annotationClass) {
         Method[] declaredMethods = clazz.getDeclaredMethods();
         for (final Method method : declaredMethods) {
             if (method.isAnnotationPresent(annotationClass)) {
@@ -179,14 +171,36 @@ public class Injector {
     }
 
 	private static Function<Class<?>, Object> getDefaultInstanceSupplier() {
-        return (c) -> {
+		return c -> {
             try {
-            	return getGuiceInjector().getInstance(c);
+				Object instance = getGuiceInjector().getInstance(c);
+				doCallAnotationMethodsOnFieldsInstance(instance, PostConstruct.class);
+				return instance;
             } catch (Exception ex) {
                 throw new IllegalStateException("Cannot instantiate view: " + c, ex);
             }
         };
     }    
+
+	private static void doCallAnotationMethodsOnFieldsInstance(Object instance,
+			final Class<? extends Annotation> annotationClass) {
+		Field[] fields = instance.getClass().getDeclaredFields();
+		for (Field field : fields) {
+			boolean wasAccesible = field.isAccessible();
+			field.setAccessible(true);
+			Object value;
+			try {
+				value = field.get(instance);
+			} catch (IllegalArgumentException | IllegalAccessException ex) {
+				throw new IllegalStateException("Problem invoking " + annotationClass + " : " + field, ex);
+			}
+			if (value != null) {
+				invokeMethodWithAnnotation(value.getClass(), value, annotationClass);
+			}
+			field.setAccessible(wasAccesible);
+		}
+		invokeMethodWithAnnotation(instance.getClass(), instance, annotationClass);
+	}
     
     
 	public static com.google.inject.Injector getGuiceInjector() {

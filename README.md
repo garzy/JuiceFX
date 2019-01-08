@@ -11,16 +11,6 @@ Injector.setGuiceModules(new MyCustomModule1(), new MyCustomModule2());
 
 It's all :)
 
-## Known limitations
-For now, injection of configuration.properties through primitive injection must also annotated by @Nullable
-
-Example:
-
-```shell
-@Inject
-@Nullable
-private String name;
-```
 
 ## Important How To Import for now in your Maven Project:
 
