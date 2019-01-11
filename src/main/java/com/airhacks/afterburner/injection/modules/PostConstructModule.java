@@ -39,7 +39,7 @@ import com.google.inject.spi.TypeListener;
  */
 public class PostConstructModule extends AbstractModule {
 
-	protected PostConstructModule() {
+	public PostConstructModule() {
 		super();
 	}
 
