@@ -1,4 +1,4 @@
-package com.airhacks.afterburner.injection;
+package com.airhacks.afterburner.injection.modules;
 
 /*
  * #%L
@@ -35,11 +35,14 @@ import com.google.inject.matcher.Matchers;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 
+/**
+ * Essential Afterburner injection features implementation with Google Guice.
+ */
 public class AfterburnerModule extends AbstractModule {
 
 	private final Configurator configurator;
 
-	public AfterburnerModule(Configurator configurator) {
+	protected AfterburnerModule(Configurator configurator) {
 		super();
 		this.configurator = configurator;
 	}

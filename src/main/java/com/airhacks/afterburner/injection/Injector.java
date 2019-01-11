@@ -40,6 +40,7 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
 import com.airhacks.afterburner.configuration.Configurator;
+import com.airhacks.afterburner.injection.modules.JuiceFXModule;
 import com.google.inject.Guice;
 import com.google.inject.Module;
 
@@ -206,7 +207,7 @@ public class Injector {
 	public static com.google.inject.Injector getGuiceInjector() {
     	if (guiceInjector == null) {
 			List<Module> modules = new ArrayList<>(guiceModules);
-			modules.add(new AfterburnerModule(configurator));
+			modules.add(new JuiceFXModule(configurator));
 			guiceInjector = Guice.createInjector(modules);
     	}
     	return guiceInjector;
@@ -229,7 +230,7 @@ public class Injector {
 	 */
 	public static void setGuiceInjector(com.google.inject.Injector injector) {
 		List<Module> modules = new ArrayList<>(guiceModules);
-		modules.add(new AfterburnerModule(configurator));
+		modules.add(new JuiceFXModule(configurator));
 		guiceInjector = injector.createChildInjector(modules);
 	}
 
