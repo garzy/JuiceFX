@@ -1,4 +1,4 @@
-JuiceFX: afterburner.fx fork with Google Guice DI
+JuiceFX: afterburner.fx fork with Google Guice DI (Java 11)
 =================================================
 
 **[NOTE]: this is a fork of the original project to add Google Guice DI** if you have better approach for this, let me know, thanks.
@@ -32,7 +32,7 @@ While I'm learn and work in the way to upload to official Maven Central, do this
  <dependency>
    <groupId>com.airhacks</groupId>
    <artifactId>juice.fx</artifactId>
-   <version>1.7.1-SNAPSHOT</version>
+   <version>1.7.1-java11-SNAPSHOT</version>
  </dependency>
 </dependencies>
 ```
