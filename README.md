@@ -2,6 +2,7 @@ JuiceFX: afterburner.fx fork with Google Guice DI
 =================================================
 
 **[NOTE]: this is a fork of the original project to add Google Guice DI** if you have better approach for this, let me know, thanks.
+**For Java 11 Compatibility switch to java11 branch and use appropiate version tag (see below maven example)** 
 
 For default, default Guice injector without modules is created, if you want setup modules you must do this at the very first start time of your application:
 
@@ -32,7 +33,7 @@ While I'm learn and work in the way to upload to official Maven Central, do this
  <dependency>
    <groupId>com.airhacks</groupId>
    <artifactId>juice.fx</artifactId>
-   <version>1.7.1-SNAPSHOT</version>
+   <version>1.7.1-SNAPSHOT</version> <!--Use 1.7.1-java11-SNAPSHOT for java 11-->
  </dependency>
 </dependencies>
 ```
