@@ -4,8 +4,8 @@
   <artifactId>juice.fx</artifactId>
   <versioning>
     <versions>
-      <version>1.7.1-SNAPSHOT</version>
+      <version>1.7.1-java11-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20190111072627</lastUpdated>
+    <lastUpdated>20190526104720</lastUpdated>
   </versioning>
 </metadata>
