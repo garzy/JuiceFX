@@ -32,7 +32,7 @@ While I'm learn and work in the way to upload to official Maven Central, do this
  <dependency>
    <groupId>com.airhacks</groupId>
    <artifactId>juice.fx</artifactId>
-   <version>1.7.1-java11-SNAPSHOT</version>
+   <version>1.7.1-java11</version>
  </dependency>
 </dependencies>
 ```
