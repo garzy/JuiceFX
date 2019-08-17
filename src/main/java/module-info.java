@@ -16,7 +16,7 @@ module JuiceFX {
     requires javafx.controls;
     requires javafx.fxml;
     requires javax.inject;
-    requires java.compiler;
+    requires java.annotation;
     requires com.google.guice;
 
     exports com.airhacks.afterburner.injection;
