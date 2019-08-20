@@ -16,9 +16,10 @@ module JuiceFX {
     requires transitive javafx.controls;
     requires transitive javafx.fxml;
     requires transitive javax.inject;
-    requires transitive java.annotation;
     requires transitive com.google.guice;
 
+    requires java.annotation;
+    
     exports com.airhacks.afterburner.injection;
     exports com.airhacks.afterburner.injection.modules;
     exports com.airhacks.afterburner.configuration;
