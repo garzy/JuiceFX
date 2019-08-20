@@ -13,11 +13,11 @@
  * the License. #L%
  */
 module JuiceFX {
-    requires javafx.controls;
-    requires javafx.fxml;
-    requires javax.inject;
-    requires java.annotation;
-    requires com.google.guice;
+    requires transitive javafx.controls;
+    requires transitive javafx.fxml;
+    requires transitive javax.inject;
+    requires transitive java.annotation;
+    requires transitive com.google.guice;
 
     exports com.airhacks.afterburner.injection;
     exports com.airhacks.afterburner.injection.modules;
