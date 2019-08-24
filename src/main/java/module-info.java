@@ -1,3 +1,7 @@
+import java.util.ServiceLoader;
+
+import com.airhacks.afterburner.injection.PresenterFactory;
+
 /*
  * #%L afterburner.fx %% Copyright (C) 2013 - 2019 Adam Bien %% Licensed under
  * the Apache License, Version 2.0 (the "License"); you may not use this file
@@ -18,6 +22,8 @@ module JuiceFX {
     requires transitive com.google.guice;
     requires transitive javax.inject;
     requires transitive java.annotation;
+    
+    uses PresenterFactory;
 
     exports com.airhacks.afterburner.injection;
     exports com.airhacks.afterburner.injection.modules;
