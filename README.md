@@ -1,6 +1,8 @@
 JuiceFX: afterburner.fx fork with Google Guice DI (Java 14)
 =================================================
 
+`Important!: This branch requires Java 13 to compile!`
+
 **[NOTE]: this is a fork of the original project to add Google Guice DI** if you have better approach for this, let me know, thanks.
 
 For default, default Guice injector without modules is created, if you want setup modules you must do this at the very first start time of your application:
@@ -9,7 +11,7 @@ For default, default Guice injector without modules is created, if you want setu
 Injector.setGuiceModules(new MyCustomModule1(), new MyCustomModule2());
 ```
 
-It's all :)
+It's all :)1
 
 
 ## Important How To Import for now in your Maven Project:
