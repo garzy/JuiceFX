@@ -1,4 +1,4 @@
-JuiceFX: afterburner.fx fork with Google Guice DI (Java 12)
+JuiceFX: afterburner.fx fork with Google Guice DI (Java 14)
 =================================================
 
 **[NOTE]: this is a fork of the original project to add Google Guice DI** if you have better approach for this, let me know, thanks.
