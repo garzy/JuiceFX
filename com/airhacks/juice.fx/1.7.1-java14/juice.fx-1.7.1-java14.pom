@@ -42,15 +42,14 @@
             <version>0.68.0.1</version>
         </dependency>
 
-        <!-- JAVA 11 && JAVAFX 11 DEPENCENDIES -->
+        <!-- JAVA 14 && JAVAFX 14 DEPENCENDIES -->      
 
-        <!-- https://mvnrepository.com/artifact/javax.annotation/javax.annotation-api -->
-        <dependency>
+          <!-- https://mvnrepository.com/artifact/javax.annotation/javax.annotation-api -->
+          <dependency>
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
             <version>1.3.2</version>
         </dependency>
-
 
         <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-controls -->
         <dependency>
@@ -302,7 +301,7 @@
         <tag>v1.6.2</tag>
     </scm>
     <properties>
-        <java.release>11</java.release>
+        <java.release>13</java.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- github server corresponds to entry in ~/.m2/settings.xml -->
         <github.global.server>github</github.global.server>
