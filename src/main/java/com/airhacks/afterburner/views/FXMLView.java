@@ -18,6 +18,10 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import javax.inject.Inject;
+
+import com.airhacks.afterburner.injection.Injector;
+import com.airhacks.afterburner.injection.InjectorInstance;
 /*
  * #%L
  * afterburner.fx
@@ -37,7 +41,6 @@ import java.util.stream.StreamSupport;
  * limitations under the License.
  * #L%
  */
-import com.airhacks.afterburner.injection.Injector;
 import com.airhacks.afterburner.injection.PresenterFactory;
 
 import javafx.application.Platform;
@@ -66,6 +69,7 @@ public abstract class FXMLView extends StackPane {
     protected static Executor FX_PLATFORM_EXECUTOR = Platform::runLater;
 
     protected final static ExecutorService PARENT_CREATION_POOL = getExecutorService();
+    protected InjectorInstance injectorInstance = null;
 
     /**
      * Constructs the view lazily (fxml is not loaded) with empty injection
@@ -84,6 +88,11 @@ public abstract class FXMLView extends StackPane {
     public FXMLView(Function<String, Object> injectionContext) {
         this.injectionContext = injectionContext;
         this.init(getFXMLName());
+    }
+    
+    @Inject
+    public void setInjectorInstance(InjectorInstance injectorInstance) {
+        this.injectorInstance = injectorInstance;
     }
 
     private void init(final String conventionalName) {
@@ -111,7 +120,11 @@ public abstract class FXMLView extends StackPane {
         List<PresenterFactory> factories = StreamSupport.stream(discoveredFactories.spliterator(), false).
                 collect(Collectors.toList());
         if (factories.isEmpty()) {
-            return Injector::instantiatePresenter;
+            if (injectorInstance != null) {
+                return injectorInstance::instantiatePresenter;
+            } else {
+                return Injector::instantiatePresenter;
+            }
         }
 
         if (factories.size() == 1) {
