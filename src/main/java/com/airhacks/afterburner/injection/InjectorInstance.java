@@ -60,6 +60,8 @@ public class InjectorInstance {
     private com.google.inject.Injector guiceInjector = null;
 
     private final List<Module> guiceModules = new ArrayList<>();
+
+    private ClassLoader classLoader = null;
     
     public <T> T instantiatePresenter(Class<T> clazz, Function<String, Object> injectionContext) {
         @SuppressWarnings("unchecked")
@@ -241,4 +243,12 @@ public class InjectorInstance {
         return l -> {
         };
     }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+
+	public ClassLoader getClassLoader() {
+		return classLoader;
+	}
 }
