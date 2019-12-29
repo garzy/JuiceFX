@@ -91,7 +91,11 @@ public class Injector {
                 field.setAccessible(wasAccessible);
             }
         });
-	}
+    }
+    
+    public <T> T getInstance(Class<T> clazz) {
+        return getGuiceInjector().getInstance(clazz);
+    }
 
     public static <T> T instantiatePresenter(Class<T> clazz) {
         return instantiatePresenter(clazz, f -> null);

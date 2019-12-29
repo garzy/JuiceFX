@@ -97,6 +97,10 @@ public class InjectorInstance {
         });
     }
 
+    public <T> T getInstance(Class<T> clazz) {
+        return getGuiceInjector().getInstance(clazz);
+    }
+
     public <T> T instantiatePresenter(Class<T> clazz) {
         return instantiatePresenter(clazz, f -> null);
     }

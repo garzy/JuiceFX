@@ -107,7 +107,7 @@ public abstract class FXMLView extends StackPane {
         PresenterFactory factory = discover();
         Callback<Class<?>, Object> controllerFactory = (Class<?> p) -> factory.instantiatePresenter(p, this.injectionContext);
         loader.setControllerFactory(controllerFactory);
-        if (injectorInstance != null) {
+        if (injectorInstance != null && injectorInstance.getClassLoader() != null) {
             loader.setClassLoader(injectorInstance.getClassLoader());
         }
         try {
