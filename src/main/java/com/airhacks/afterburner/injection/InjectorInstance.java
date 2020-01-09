@@ -176,7 +176,7 @@ public class InjectorInstance {
         presenters.forEach(Injector::destroy);
         presenters.clear();
         resetInstanceSupplier();
-        resetConfigurationSource();
+        resetConfigurationSource();          
     }
 
     private Function<Class<?>, Object> getDefaultInstanceSupplier() {

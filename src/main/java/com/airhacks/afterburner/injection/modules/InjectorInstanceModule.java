@@ -39,6 +39,7 @@ public class InjectorInstanceModule extends AbstractModule implements TypeListen
 
     @Override
     protected void configure() {
+        bind(InjectorInstance.class).toInstance(injectorInstance);
         binder().bindListener(Matchers.any(), this);
     }
 
